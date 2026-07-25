@@ -134,7 +134,7 @@
 
         // اجرای اولیه و تنظیم رفرش 10 ثانیه ای
         loadAllAds();
-        setInterval(loadAllAds, 10000);
+        setInterval(loadAllAds, 15000);
     </script>
 </body>
 </html>
