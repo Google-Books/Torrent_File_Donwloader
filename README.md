@@ -6,88 +6,92 @@
     <title>Download Torrent</title>
     <style>
         body {
-            background-color: #000000; /* بک گراند کاملا سیاه */
+            background-color: #000000; /* بک‌گراند کاملا سیاه */
             margin: 0;
-            padding: 0;
+            padding: 20px 0 50px 0;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 200vh; /* قابلیت اسکرول صفحه */
-            padding-top: 110px; /* فاصله برای بنر چسبان بالا */
+            min-height: 200vh; /* برای اطمینان از قابلیت اسکرول صفحه */
         }
 
-        /* بنر چسبان بالای صفحه */
-        .top-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #000000;
+        /* کانتینر تبلیغات */
+        .ad-container {
+            margin: 15px 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            margin: 0;
-            padding: 0;
+            width: 100%;
+            overflow: hidden;
         }
 
-        /* دکمه سه بعدی، سبز و گوشه گرد */
+        /* استایل پایه دکمه برای موبایل (بزرگتر از قبل) */
         .download-btn {
             background-color: #28a745;
             color: #ffffff;
-            padding: 15px 40px;
-            font-size: 18px;
+            padding: 20px 50px;
+            font-size: 22px;
             font-weight: bold;
             border-radius: 12px;
             text-decoration: none;
-            box-shadow: 0 6px 0 #1e7e34, 0 10px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 6px 0 #1e7e34, 0 10px 15px rgba(0,0,0,0.6);
             transition: all 0.1s;
-            margin-top: 30px;
-            margin-bottom: 10px;
+            margin-top: 25px;
+            margin-bottom: 25px;
             text-align: center;
             display: inline-block;
+            border: none;
+            cursor: pointer;
         }
 
         .download-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 2px 0 #1e7e34, 0 5px 8px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 0 #1e7e34, 0 5px 8px rgba(0,0,0,0.6);
         }
 
-        /* فاصله کم برای تبلیغات پایین */
-        .ad-container {
-            margin: 10px 0;
-            display: flex;
-            justify-content: center;
-            width: 100%;
+        /* استایل دکمه برای دستگاه‌های بزرگتر (تبلت، لپ‌تاپ و کامپیوتر) */
+        @media (min-width: 768px) {
+            .download-btn {
+                padding: 35px 90px;
+                font-size: 32px;
+                border-radius: 18px;
+                box-shadow: 0 8px 0 #1e7e34, 0 15px 20px rgba(0,0,0,0.7);
+                margin-top: 40px;
+                margin-bottom: 40px;
+            }
+            .download-btn:active {
+                transform: translateY(6px);
+                box-shadow: 0 2px 0 #1e7e34, 0 8px 12px rgba(0,0,0,0.7);
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- کانتینر تبلیغ چسبان بالا -->
-    <div class="top-banner" id="top-ad"></div>
+    <!-- جایگاه تبلیغ اول (بالای دکمه) -->
+    <div class="ad-container" id="ad-top-slot"></div>
 
     <!-- 
     ====== قسمت تغییر لینک و اسم دکمه ======
-    لینک (href) و اسم دکمه رو میتونی از خط پایین تغییر بدی 
+    برای تغییر اسم دکمه، متن بین تگ‌ها رو تغییر بده.
+    برای تغییر لینک دانلود، آدرس داخل ویژگی href رو عوض کن.
     -->
-    <a href="https://archive.org/download/22-switchblade.mb/22Switchblade.mb.torrent" class="download-btn" target="_blank">
+    <a href="https://archive.org/download/22-switchblade.mb/22Switchblade.mb.torrent" class="download-btn" id="downloadButton" target="_blank">
         Download Torrent File
     </a>
     <!-- ==================================== -->
 
-    <!-- کانتینر تبلیغ زیر دکمه -->
-    <div class="ad-container" id="bottom-ad"></div>
+    <!-- جایگاه تبلیغ دوم (پایین دکمه 1) -->
+    <div class="ad-container" id="ad-bottom-slot-1"></div>
     
-    <!-- کانتینر تبلیغ نیتیو -->
-    <div class="ad-container" id="native-ad"></div>
+    <!-- جایگاه تبلیغ سوم (پایین دکمه 2) -->
+    <div class="ad-container" id="ad-bottom-slot-2"></div>
 
     <script>
-        // تابع ساخت iframe برای دور زدن محدودیت‌های لود تبلیغات
+        // تابع ایجاد تبلیغ در یک iframe ایزوله برای جلوگیری از تداخل کدها
         function createIframeAd(containerId, adCode, width, height) {
             const container = document.getElementById(containerId);
-            container.innerHTML = ''; // پاک کردن تبلیغ قبلی
+            container.innerHTML = ''; // پاکسازی کانتینر قبل از لود مجدد
             
             const iframe = document.createElement('iframe');
             iframe.width = width;
@@ -100,45 +104,42 @@
 
             const doc = iframe.contentWindow.document;
             doc.open();
-            // تزریق کدهای تبلیغاتی به داخل iframe با پس زمینه مشکی
-            doc.write('<html><head><style>body{margin:0;padding:0;background:#000;display:flex;justify-content:center;}</style></head><body>' + adCode + '</body></html>');
+            // تزریق کد با بک‌گراند مشکی تا با صفحه هماهنگ باشد
+            doc.write('<html><head><style>body{margin:0;padding:0;background:#000;display:flex;justify-content:center;align-items:center;height:100vh;}</style></head><body>' + adCode + '</body></html>');
             doc.close();
         }
 
-        // تابع اصلی لود و ریلود تبلیغات
+        // تابع اصلی بررسی دستگاه و لود تبلیغات متناسب
         function loadAllAds() {
             const screenWidth = window.innerWidth;
-            
-            // 1. منطق نمایش تبلیغ بالا بر اساس سایز دستگاه کاربر
-            let topAdCode = '';
-            let topW = 320, topH = 50;
+            const isDesktopOrTablet = screenWidth >= 768; // 768 پیکسل به بالا به عنوان تبلت و کامپیوتر در نظر گرفته می‌شود
 
-            if (screenWidth >= 768) { // سایز بزرگ (دسکتاپ/تبلت بزرگ)
-                topAdCode = `<script>atOptions={'key':'f149a587920745dc076b1f8fe3e2a0a0','format':'iframe','height':90,'width':728,'params':{}};</scr`+`ipt><script src="https://speedingdeadlyplays.com/f149a587920745dc076b1f8fe3e2a0a0/invoke.js"></scr`+`ipt>`;
-                topW = 728; topH = 90;
-            } else if (screenWidth >= 480) { // سایز میانه (تبلت)
-                topAdCode = `<script>atOptions={'key':'90a8d37acfa9e879fd26c5bcd919d8a1','format':'iframe','height':60,'width':468,'params':{}};</scr`+`ipt><script src="https://speedingdeadlyplays.com/90a8d37acfa9e879fd26c5bcd919d8a1/invoke.js"></scr`+`ipt>`;
-                topW = 468; topH = 60;
-            } else { // سایز کوچک (موبایل)
-                topAdCode = `<script>atOptions={'key':'2fe12843aa95d044d4fef22456b0668a','format':'iframe','height':50,'width':320,'params':{}};</scr`+`ipt><script src="https://speedingdeadlyplays.com/2fe12843aa95d044d4fef22456b0668a/invoke.js"></scr`+`ipt>`;
-                topW = 320; topH = 50;
+            // کدهای تبلیغاتی
+            const ad300x250 = `<script>atOptions={'key':'fbbc77f2f398f4abc96969e7992e2752','format':'iframe','height':250,'width':300,'params':{}};</scr`+`ipt><script src="https://speedingdeadlyplays.com/fbbc77f2f398f4abc96969e7992e2752/invoke.js"></scr`+`ipt>`;
+            const adNative = `<script async="async" data-cfasync="false" src="https://speedingdeadlyplays.com/d7077547f7a1416ae3fbd97b9d3c1174/invoke.js"></scr`+`ipt><div id="container-d7077547f7a1416ae3fbd97b9d3c1174"></div>`;
+
+            if (isDesktopOrTablet) {
+                // *** قانون برای تبلت، لپ‌تاپ و کامپیوتر ***
+                // فقط تبلیغ نیتیو نمایش داده شود (بالا 1 بار، پایین 2 بار)
+                createIframeAd('ad-top-slot', adNative, "100%", 400); // عرض کامل، ارتفاع 400 برای نیتیو
+                createIframeAd('ad-bottom-slot-1', adNative, "100%", 400);
+                createIframeAd('ad-bottom-slot-2', adNative, "100%", 400);
+            } else {
+                // *** قانون برای موبایل (دستگاه‌های کوچکتر) ***
+                // بالا: تبلیغ بزرگ 300 در 250 (جایگزین بنر کوچک قبلی)
+                createIframeAd('ad-top-slot', ad300x250, 300, 250);
+                // پایین 1: تبلیغ 300 در 250
+                createIframeAd('ad-bottom-slot-1', ad300x250, 300, 250);
+                // پایین 2: تبلیغ نیتیو
+                createIframeAd('ad-bottom-slot-2', adNative, "100%", 400);
             }
-            createIframeAd('top-ad', topAdCode, topW, topH);
-
-            // 2. تبلیغ 300x250 با فاصله کم زیر دکمه
-            const bottomAdCode = `<script>atOptions={'key':'fbbc77f2f398f4abc96969e7992e2752','format':'iframe','height':250,'width':300,'params':{}};</scr`+`ipt><script src="https://speedingdeadlyplays.com/fbbc77f2f398f4abc96969e7992e2752/invoke.js"></scr`+`ipt>`;
-            createIframeAd('bottom-ad', bottomAdCode, 300, 250);
-
-            // 3. تبلیغ نیتیو در پایین‌ترین قسمت
-            const nativeAdCode = `<script async="async" data-cfasync="false" src="https://speedingdeadlyplays.com/d7077547f7a1416ae3fbd97b9d3c1174/invoke.js"></scr`+`ipt><div id="container-d7077547f7a1416ae3fbd97b9d3c1174"></div>`;
-            createIframeAd('native-ad', nativeAdCode, "100%", 400); // ارتفاع 400 برای جا دادن نیتیو
         }
 
-        // اجرای تبلیغات در لحظه باز شدن صفحه
+        // 1. لود اولیه تبلیغات هنگام باز شدن صفحه
         loadAllAds();
 
-        // رفرش شدن تمام تبلیغ‌ها دقیقا هر 10 ثانیه (10000 میلی‌ثانیه)
-        setInterval(loadAllAds, 10000);
+        // 2. تنظیم رفرش (ریلود) خودکار تمامی تبلیغات دقیقاً هر 10 ثانیه یکبار
+        setInterval(loadAllAds, 10000); // 10000 میلی‌ثانیه = 10 ثانیه
     </script>
 </body>
 </html>
