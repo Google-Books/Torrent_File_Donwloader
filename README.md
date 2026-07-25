@@ -17,7 +17,7 @@
             min-height: 300vh; 
         }
 
-        /* کانتینر تبلیغات */
+        /* ========== استایل‌های موبایل (بدون هیچ تغییری طبق درخواست شما) ========== */
         .ad-container {
             margin: 10px 0;
             display: flex;
@@ -26,7 +26,6 @@
             overflow: hidden;
         }
 
-        /* استایل دکمه برای موبایل */
         .download-btn {
             background-color: #28a745;
             color: #ffffff;
@@ -50,24 +49,23 @@
             box-shadow: 0 2px 0 #1e7e34, 0 5px 8px rgba(0,0,0,0.6);
         }
 
-        /* استایل‌ها مخصوص دستگاه‌های بزرگتر (تبلت، لپ‌تاپ و کامپیوتر) */
+        /* ========== استایل‌های دستگاه‌های بزرگتر (تبلت، لپ‌تاپ و کامپیوتر) ========== */
         @media (min-width: 768px) {
             body {
-                /* طول صفحه در دسکتاپ نیاز نیست خیلی زیاد باشد چون المان ها نزدیک شده اند */
                 min-height: 100vh; 
             }
             .ad-container {
-                /* کاهش شدید فاصله بین تبلیغات (نزدیک به 70 درصد کاهش) */
-                margin: 5px 0; 
+                /* نزدیک شدن شدید تبلیغات به یکدیگر (فاصله در حد 2 پیکسل) */
+                margin: 2px 0; 
             }
             .download-btn {
                 padding: 30px 80px;
                 font-size: 32px;
                 border-radius: 18px;
                 box-shadow: 0 8px 0 #1e7e34, 0 15px 20px rgba(0,0,0,0.7);
-                /* کاهش شدید فاصله بالا و پایین دکمه با تبلیغات */
-                margin-top: 15px; 
-                margin-bottom: 15px;
+                /* چسباندن دکمه به تبلیغ بالایی و تبلیغ پایینی (فاصله مورچه‌ای!) */
+                margin-top: 2px; 
+                margin-bottom: 2px;
             }
             .download-btn:active {
                 transform: translateY(6px);
@@ -127,10 +125,9 @@
                 createIframeAd('ad-bottom-slot-1', adNative, "100%", 500);
                 createIframeAd('ad-bottom-slot-2', adNative, "100%", 500);
             } else {
-                // موبایل
+                // موبایل (بدون تغییر)
                 createIframeAd('ad-top-slot', ad300x250, 300, 250);
                 createIframeAd('ad-bottom-slot-1', ad300x250, 300, 250);
-                // رفع مشکل عکس ارسالی: ارتفاع تبلیغ نیتیو به 1000 افزایش یافت تا در موبایل قطع نشود
                 createIframeAd('ad-bottom-slot-2', adNative, "100%", 1000);
             }
         }
